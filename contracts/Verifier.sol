@@ -7,15 +7,19 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Verifier is Ownable {
     struct UserData {
-        bytes32 aadharCard;
-        bytes32 panCard;
+        uint256 aadharCard;
+        uint256 panCard;
     }
 
     mapping(address => UserData) private userData;
     mapping(address => bool) public hasRegistered;
     mapping(address => bool) private whitelist;
 
-    function registerUser(bytes32 _aadharCard, bytes32 _panCard)
+    function addToWhitelist(address _address) public onlyOwner {
+        whitelist[_address] = true;
+    }
+
+    function registerUser(uint256 _aadharCard, uint256 _panCard)
         public
         returns (bool)
     {
@@ -24,7 +28,7 @@ contract Verifier is Ownable {
         return true;
     }
 
-    function modifyUser(bytes32 _aadharCard, bytes32 _panCard)
+    function modifyUser(uint256 _aadharCard, uint256 _panCard)
         public
         returns (bool)
     {
@@ -36,7 +40,7 @@ contract Verifier is Ownable {
         return false;
     }
 
-    function getUserData(address _user) public view returns (bytes32, bytes32) {
+    function getUserData(address _user) public view returns (uint256, uint256) {
         if (whitelist[msg.sender]) {
             return (userData[_user].aadharCard, userData[_user].panCard);
         }
